@@ -1,0 +1,125 @@
+---
+title: "Minimalist single boxplot v2023"
+author: "Stephanie Huang"
+date: "2024-05-17"
+output: html_document
+---
+
+(17 May 2024 - still to modify & format) 
+Example of minimalist box plots using the ToothGrowth data set. 
+Note to self - Based on my dendritic spine details graphs from NL360 2023 analyses. 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Setup
+### Load Packages
+```{r load packages, message=FALSE, warning=FALSE}
+library(tidyverse) #for ggplots
+library(datasets) #to get Toothgrowth dataset
+
+```
+
+### Load Data
+Dataset on the effect vitamin C (supplement type & dosage) has on guinea pig tooth growth
+Typically would load from local csv.
+```{r}
+df <- data.frame(ToothGrowth)
+
+str(df)
+```
+
+
+### Prepare data for plots
+#### Reorder Bar Plots 
+<https://r-graph-gallery.com/9-ordered-boxplot.html>
+Actually don't need this but left here if ordering is desired.
+```{r}
+df$supp = factor(df$supp, levels=c("OJ", "VC"))
+df$dose = factor(df$dose)
+
+str(df)
+```
+
+
+# Plotting
+Doing a basic boxplot with invidual data points & mean.
+
+### Assign Variables
+```{r}
+tg_plot <- ggplot(df, aes(x=supp, y=len, fill = dose, color = supp))
+```
+
+### Make Plot
+How to get facet labels on to the Y-Axis <https://stackoverflow.com/questions/37573155/showing-different-axis-labels-using-ggplot2-with-facet-wrap>
+Legend title position <https://stackoverflow.com/questions/47127253/horizontal-legend-with-title-on-top-in-ggplot>
+Orange Creamsicle Color Palette <https://www.color-hex.com/color-palette/42359>
+Theme settings <https://ggplot2.tidyverse.org/reference/theme.html>
+```{r}
+my_plot <- tg_plot + 
+  geom_boxplot(aes(fill = dose), color="grey10", alpha = 0.9, fatten = 1, 
+               size = 0.7, width = 0.3, outlier.shape = NA, 
+               position = position_dodge(width=0.7)) + #p_d = space between plots
+  stat_summary(fun=mean, geom="point", shape=4, 
+               size = 2, stroke = 0.5, color ="grey10",
+               position = position_dodge(width=0.7)) + #displays mean 
+  geom_point(color="grey10", size=1.1, shape=1,
+             position=position_jitterdodge(dodge.width = 0.7, jitter.width = 0.15)) + 
+  labs(y = 'Length (mm) \n', x = 'Supplement Type', 
+       title = 'Effect of Vitamin C on Guinea Pig Tooth Growth',
+       subtitle ='Length of guinea pig tooth growth (mm) as a function of vitamin c supplement type (orange juice or ascorbic acid) & dosage (mg/day).' ) + #manually sets axis names & titles
+  scale_y_continuous(breaks=seq(0, 40, 5)) + # seq(lower, upper, divisions)
+  scale_x_discrete(labels=c("Orange Juice", "Ascorbic Acid")) + #re-label x axis
+  scale_fill_manual(name = "Dosage",
+                    values=alpha(c("#ffc99d", "#ff9c59", "#ff580f", 0.9)),
+                    breaks=c("0.5", "1", "2"),
+                    labels=c("0.5", "1", "2"),
+                    guide = guide_legend(title.position = "top")) + 
+   theme(
+    axis.line = element_line(linewidth =0.5, colour = "grey10"), # adds lines by the axes
+    axis.title = element_text(family = "sans", size = 11, face="plain", colour = "grey10"), #axis title
+    axis.text = element_text(family ="sans", size = 9, face = "plain", color ="grey10"), #axis labels 
+    #axis.text.x = element_blank(),
+    #axis.title.x = element_blank(),
+    axis.ticks = element_line(linewidth =0.5, colour = "grey10"), # tick marks along axes
+    panel.background = element_rect(fill = "white"), #specifies background of plot (inner bit with data)
+    panel.border = element_rect(linetype = "solid", linewidth = 0.5, fill = NA), #plot borders
+    panel.spacing = unit(0, "cm"),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    #panel.grid.minor = element_line(linetype = "solid", linewidth = 0.2, color = "grey50"),
+    #panel.grid.major = element_line(linetype = "solid", linewidth = 0.2, color = "grey90"),
+    #panel.grid.minor = element_line(linetype = "solid", linewidth = 0.2, color = "grey50"),
+    plot.title = element_text(family = "sans", size = 14,  face="bold.italic", colour = "grey10"),
+    plot.subtitle = element_text(family = "sans", size = 10,  face="italic", colour = "grey10"),
+    plot.background = element_rect(fill = "white"), # bg of entire plot (including axes region)
+    #panel.grid= element_blank(),
+    legend.position = "right",
+    legend.justification = "top",
+    legend.title = element_text(size = 10, face="italic", colour = "grey10"), 
+    legend.key = element_rect(fill = "transparent"), # background of legend icon
+    #legend.title.align = (0.5), # centres legend title
+    legend.text = element_text(family = "sans", size = 8, face="plain", colour = "grey10"),
+    #legend.background = element_rect(fill="white", linewidth=0.5, linetype="solid", colour = "grey10"),
+    legend.background = element_rect(fill="white"), #no box
+    legend.box = "horizontal", 
+    legend.spacing.x = unit(0.1, 'cm'), #spacing between text & key
+    legend.spacing.y = unit(0.2, 'cm'), #spacing between text & key
+    legend.direction = "vertical", 
+    #strip.text = element_text(family ="sans", size = 11, face = "plain", color ="grey10"), #FcW title
+    #strip.text = element_blank(),
+    #strip.background = element_rect(color = "grey10", fill = "grey90"), 
+  )
+
+plot(my_plot)
+
+```
+
+
+### Include Plot
+```{r plot, echo=FALSE, fig.height=5, fig.width=9}
+plot(my_plot)
+```
+
+
