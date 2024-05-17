@@ -68,7 +68,7 @@ my_plot <- tg_plot +
              position=position_jitterdodge(dodge.width = 0.7, jitter.width = 0.15)) + 
   labs(y = 'Length (mm) \n', x = 'Supplement Type', 
        title = 'Effect of Vitamin C on Guinea Pig Tooth Growth',
-       subtitle ='Length of guinea pig tooth growth (mm) as a function of vitamin c supplement type (orange juice or ascorbic acid) & dosage (mg/day).' ) + #manually sets axis names & titles
+       subtitle ='Length of guinea pig tooth growth as a function of vitamin c supplement type & dosage (mg/day) [17 May 2024 v1].' ) + #manually sets axis names & titles
   scale_y_continuous(breaks=seq(0, 40, 5)) + # seq(lower, upper, divisions)
   scale_x_discrete(labels=c("Orange Juice", "Ascorbic Acid")) + #re-label x axis
   scale_fill_manual(name = "Dosage",
@@ -101,8 +101,8 @@ my_plot <- tg_plot +
     legend.key = element_rect(fill = "transparent"), # background of legend icon
     #legend.title.align = (0.5), # centres legend title
     legend.text = element_text(family = "sans", size = 8, face="plain", colour = "grey10"),
-    #legend.background = element_rect(fill="white", linewidth=0.5, linetype="solid", colour = "grey10"),
-    legend.background = element_rect(fill="white"), #no box
+    legend.background = element_rect(fill="white", linewidth=0.5, linetype="solid", colour = "grey10"),
+    #legend.background = element_rect(fill="white"), #no box
     legend.box = "horizontal", 
     legend.spacing.x = unit(0.1, 'cm'), #spacing between text & key
     legend.spacing.y = unit(0.2, 'cm'), #spacing between text & key
