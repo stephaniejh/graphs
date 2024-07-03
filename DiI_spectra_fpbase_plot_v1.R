@@ -1,4 +1,4 @@
-#DiI_spectra_fpbase_plot_v1
+#DiI_spectra_fpbase_plot_v1 (03 July 2024)
 #Code for plotting the spectral information of fluorescent probes & dyes
 #using data from FPbase.org (exported csv)
 # MAKES AN AREA PLOT  
