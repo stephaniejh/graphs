@@ -65,7 +65,7 @@ ggplot(df,
                    expand = c(.2, .05)) + # widens graph
   geom_text(stat = "stratum", aes(label = after_stat(stratum))) + # adds the text
   theme_bw()
-
+ 
 
 ggplot(df, 
        aes(axis1= Sex, axis2 = Hair, axis3 = Eye, # the 3 x-axes
