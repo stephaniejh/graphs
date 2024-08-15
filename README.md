@@ -10,3 +10,8 @@ Shared scripts for R ggplot graphs
 *This was styled for a black background powerpoint presentation.*
 ![Spectral_data_of_DiI_fpbase_03July2024](https://github.com/stephaniejh/graphs/assets/54291508/72db9780-1d73-42c5-9330-742828d6c912)
 *Still to edit & annotate*
+
+#### Alluvial Plot Test with HairEyeColor dataset (14 Aug 2024)
+![R_alluvial_plot_test_14Aug2024](https://github.com/user-attachments/assets/6dd33501-fdcb-49c2-9d5b-545f642630ae)
+*Just testing to see what this plot type looks like - might revisit or move to a different plot type
+
