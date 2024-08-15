@@ -1,10 +1,9 @@
-# R alluvial plot (14 Aug 2024)
+# R alluvial plot test (14 Aug 2024)
 
 # RESOURCES
 #https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/HairEyeColor.html
 #https://datavizcatalogue.com/blog/sankey-diagrams-parallel-sets-alluvial-diagrams-whats-the-difference/
 #https://corybrunson.github.io/ggalluvial/
-
 
 
 # PACKAGES
@@ -30,15 +29,16 @@ ggplot(df,
        aes(axis1=Sex, axis2 = Hair, axis3 = Eye, # the 3 x-axes
            y = n)) +
   geom_alluvium(aes(fill = Sex)) + #makes alluvial plot
-  scale_x_discrete(limits = c("Sex", "Hair", "Eye"), # labels x axis
-                   expand = c(.2, .05)) + # widens graph
-  geom_stratum(aes(fill = Sex)) + # the blocks in between
+  scale_x_discrete(limits = c("Sex", "Hair Colour", "Eye Colour"), # labels x axis
+                   expand = c(.1, .05)) + # widens graph
+  geom_stratum(fill= "grey60", alpha = 0.5) + # the blocks in between
   geom_text(stat = "stratum", aes(label = after_stat(stratum))) + # adds the text
+  scale_fill_manual(values=c("#ee7576", "#87b1d4")) + 
   theme_bw()
 
 
 
-# EVERYTHING FROM HERE ONWARDS STILL DOESN'T WORK!!!!
+# EVERYTHING FROM HERE ONWARDS STILL DOESN'T WORK!!!! ~ ~ ~ ~ ~ ~ ~ ~ ~~ ~ ~ ~ ~ ~ ~
 # PLOT PREP
 #SET FACTORS 
 df$Hair= factor(df$Hair, levels=c("Black", "Blond", "Brown", "Red"))
@@ -80,4 +80,5 @@ ggplot(df,
   geom_text(stat = "stratum", aes(label = after_stat(stratum))) + # adds the text
   theme_bw()
 
+# ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
