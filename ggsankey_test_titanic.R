@@ -39,6 +39,7 @@ df_tally <- df_long %>%
 # Merge the 2 data frames together
 df_merged <- merge(df_long, df_tally, by.x = 'node', by.y = 'node', all.x = TRUE)
 
+
 # SANKEY PLOT
 display_carto_all() # displays the colours from Rcartocolor
 
