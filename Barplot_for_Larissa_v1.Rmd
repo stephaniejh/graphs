@@ -1,0 +1,107 @@
+---
+title: "Jamovi Barplot for Larissa"
+author: "Stephanie Huang"
+date: "2024-06-27"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+### LOAD THE PACKAGES
+Install packages if needed e.g `install.packages("jmvcore")`
+```{r, include=FALSE}
+#install.packages("jmvcore") 
+
+library(tidyverse) #for ggplot2 & dplyr %>% & rename function
+library(jmvcore) # for Jamovi themes
+library(ggbreak) # for break axis function
+
+```
+
+
+### READ IN THE DATA
+Make sure to set the working directory to the source file location. *Session \> Set Working Directory \> To Source File Location* Also can do `read_excel` using the `readr` package instead but using CSV file here for ease
+```{r}
+#read in csv file & assign to df
+df <- read.csv("Thig.csv", header = TRUE) 
+```
+
+
+### RENAME THE CONDITION COLUMN
+```{r}
+df <- df %>% rename(Condition = Condiction)
+```
+
+
+### ASSIGN THE VARIABLES (FACTORS & LEVELS) & ORDER THEM FOR GRAPHING
+This needs to be done; otherwise, the treatment and condition will be treated as a continuous variable rather than a factor because they are numbers. This also sets the order of presentation.
+```{r}
+#Set factors & levels
+df$Condition = factor(df$Condition, levels=c(3, 24, 8))
+df$Treatment = factor(df$Treatment, levels=c(4, 8, 0))
+
+print(df) #prints out (to double check everything is still correct)
+str(df) #shows structure of changed data
+```
+
+
+### CALCULATE THE VALUES FOR THE MEAN & STANDARD ERROR
+[How tow - Grouped Barplots with Error Bars (towardsdatascience)](https://towardsdatascience.com/grouped-barplot-with-error-bars-in-r-ee87b112204d){.uri}
+Here, we make a new data frame called `mean_df` where we calculate the mean & standard error using for each Condition x Treatment combination using the `summarise` function from `dplyr`
+```{r}
+mean_df <- df %>%
+  group_by(Condition, Treatment) %>%
+  summarise(mean = mean(Thigmotaxis),
+            se = sd(Thigmotaxis)/sqrt(n()))
+
+print(mean_df) # check if correct (this should make the descriptives in Jamovi)
+```
+
+
+### ASSIGN THE VARIABLES FOR THE GRAPH
+This is for preparing the plot basically saying we want to use the `mean_df` data set & how we assign the aesthetics of the plot (e.g. what we want on each axis & on the legend etc).
+```{r}
+bp <- ggplot(mean_df, aes(x = Condition, y = mean, fill = Treatment))
+```
+
+
+### MAKE THE BAR PLOT
+PART 1 - Barplot & errorbars Since we're plotting the calculated values from `mean_df` we can use `geom_col` In `geom_errorbar` we take the calculated SE use it to plot the error bars.
+PART 2 - axes, labels, & legends `labs` axis labels & titles `scale_y_continuous` this manually sets the range & breaks of the y axis but is also what is causing the double axis when combined with the ggbreak package `scale_x_discrete` renaming the x axis variables/labels `scale_fill_manual` setting the legend e.g. the colour & legend labels
+PART 3 - THEME `theme_default` is from [`jmvcore` package](https://www.rdocumentation.org/packages/jmvcore/versions/2.4.7) ( it gives original style from Jamovi)\
+```{r}
+my_bp <- bp + 
+  geom_col(position = "dodge", width = 0.5, color ="grey10") +
+  geom_errorbar(aes(ymin = mean-se, ymax = mean+se),
+                position = position_dodge(width = 0.5), width = 0.2) +
+  labs(y = 'Thigmotaxis (%)') + #sets the axis label
+  scale_y_continuous(breaks=seq(0, 100, 5)) + # seq(lower, upper, divisions)
+  scale_x_discrete(labels = c("3 hours", "24 hours", "8 days" )) + # relabel x axis - make sure to match order 
+  scale_fill_manual(name = "Treatment",
+                    breaks=c("4", "8", "0"),
+                    labels=c("4 mg/kg", "8 mg/kg", "Saline"),
+                    values=c("#ee7576", "#87b1d4", "#94cf92")) + 
+  theme_default(base_size = 14, scale = "none") #jamovi theme
+
+#to acutally plot out my plot in the plot pane
+plot(my_bp) # this gives the graph with no breaks
+
+```
+
+
+### ADD THE SCALE BREAK ON THE GRAPH
+It seems the `ggbreak` needs to be added as an additional layer Add `scale_y_break` from [ggbreak](https://cran.r-project.org/web/packages/ggbreak/vignettes/ggbreak.html). Play around with the settings here to get the desired axis range - right now, it breaks from 10 to 80. How to [get rid of duplicate axis](https://stackoverflow.com/questions/71992148/removing-duplicate-top-x-axis-in-ggplot-plus-add-axis-break) element blank for additional axis. See [ggplot theme](https://ggplot2.tidyverse.org/reference/theme.html) for other style settings
+```{r}
+my_bp + scale_y_break(c(10, 80), scales = "fixed") + 
+  theme(axis.text.x.top = element_blank(),
+        axis.ticks.x.top = element_blank(),
+        axis.line.x.top = element_blank(),
+        axis.text.y.right = element_blank(),
+        axis.ticks.y.right = element_blank(),
+        axis.line.y.right = element_blank(),
+        legend.text = element_text(size = 11) #made this smaller to make other axis font sizes 
+        )
+```
